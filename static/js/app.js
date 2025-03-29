@@ -64,6 +64,12 @@ function applyThemePreference() {
   if (checkbox) {
     checkbox.checked = (theme === "light"); // Checkbox checked = light theme, unchecked = dark theme
   }
+  setBootstrapTheme(theme);
+}
+
+// Bootstrap styles its own components (forms, tables, dropdowns) from this
+function setBootstrapTheme(theme) {
+  document.documentElement.setAttribute("data-bs-theme", theme);
 }
 
 function updateEditorTheme(theme) {
@@ -243,7 +249,7 @@ function loadLocalQueries() {
 
     resp.forEach(function(item) {
       var title = item.title || item.id;
-      $("<li><a href='#' class='load-local-query' data-id='" + item.id + "'>" + title + "</a></li>").appendTo(container);
+      $("<li><a href='#' class='dropdown-item load-local-query' data-id='" + item.id + "'>" + title + "</a></li>").appendTo(container);
     });
 
     if (resp.length > 0) $("#load-local-query").prop("disabled", "");
@@ -589,7 +595,7 @@ function buildTable(results, sortColumn, sortOrder, options) {
 
     // Add row action button
     if (action) {
-      r += "<td><a class='btn btn-xs btn-" + action.style + " row-action' data-action='" + action.name + "' data-value='" + row[action.dataColumn] + "' href='#'>" + action.title + "</a></td>";
+      r += "<td><a class='btn btn-sm btn-" + action.style + " row-action' data-action='" + action.name + "' data-value='" + row[action.dataColumn] + "' href='#'>" + action.title + "</a></td>";
     }
 
     rows += "<tr>" + r + "</tr>";
@@ -933,7 +939,7 @@ function showActivityPanel() {
 
 function showQueryProgressMessage() {
   $("#run, #explain-dropdown-toggle, #csv, #json, #xml, #load-local-query").prop("disabled", true);
-  $("#explain-dropdown").removeClass("open");
+  $("#explain-dropdown .dropdown-menu").removeClass("show");
   $("#query_progress").show();
 }
 
@@ -1279,14 +1285,14 @@ function showConnectionSettings() {
         $("<option value='" + key + "''>" + key + "</option>").appendTo("#connection_bookmarks");
       }
 
-      $(".bookmarks").show();
+      $(".connection-bookmarks-group").show();
     }
     else {
       if (appFeatures.bookmarks_only) {
         $("#connection_error").html("Running in <b>bookmarks-only</b> mode but <b>NO</b> bookmarks configured.").show();
         $(".open-connection").hide();
       } else {
-        $(".bookmarks").hide();
+        $(".connection-bookmarks-group").hide();
       }
     }
   });
@@ -1493,6 +1499,12 @@ function getQuotedSchemaTableName(table) {
   return table;
 }
 
+function initDropdownMenus() {
+  $(".dropdown-menu a").each(function(id, el) {
+    $(el).addClass("dropdown-item");
+  });
+}
+
 function bindContextMenus() {
   bindTableHeaderMenu();
   bindCurrentDatabaseMenu();
@@ -1676,6 +1688,7 @@ function bindContentModalEvents() {
 }
 
 $(document).ready(function() {
+  initDropdownMenus();
   bindInputResizeEvents();
   bindContentModalEvents();
 
@@ -2076,6 +2089,7 @@ $(document).ready(function() {
     themeToggle.addEventListener("change", function() {
       var theme = this.checked ? "light" : "dark";
       saveThemePreference(theme);
+      setBootstrapTheme(theme);
       updateEditorTheme(theme); // Update ACE editor theme when user toggles
     });
 
