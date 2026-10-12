@@ -21,11 +21,15 @@ RUN make build
 # ------------------------------------------------------------------------------
 # Release Stage
 # ------------------------------------------------------------------------------
-FROM gcr.io/distroless/static-debian13:nonroot
+FROM alpine:3.24
+
+# pg_dump is needed for database exports
+RUN apk add --no-cache postgresql-client
+RUN adduser -D -H -u 1000 -s /sbin/nologin pgweb
 
 COPY --from=build /build/pgweb /usr/bin/pgweb
 
-USER nonroot
+USER pgweb
 
 EXPOSE 8081
 
