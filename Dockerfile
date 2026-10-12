@@ -1,7 +1,7 @@
 # ------------------------------------------------------------------------------
 # Builder Stage
 # ------------------------------------------------------------------------------
-FROM golang:1.26-trixie AS build
+FROM golang:1.27-trixie AS build
 
 # Set default build argument for CGO_ENABLED
 ARG CGO_ENABLED=0

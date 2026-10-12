@@ -496,14 +496,14 @@ func testQuery(t *testing.T) {
 	t.Run("error", func(t *testing.T) {
 		res, err := testClient.Query("SELCT * FROM books")
 		assert.NotNil(t, err)
-		assert.Equal(t, "pq: syntax error at or near \"SELCT\"", err.Error())
+		assert.Equal(t, "pq: syntax error at or near \"SELCT\" at column 1 (42601)", err.Error())
 		assert.Nil(t, res)
 	})
 
 	t.Run("invalid table", func(t *testing.T) {
 		res, err := testClient.Query("SELECT * FROM books2")
 		assert.NotNil(t, err)
-		assert.Equal(t, "pq: relation \"books2\" does not exist", err.Error())
+		assert.Equal(t, "pq: relation \"books2\" does not exist at column 15 (42P01)", err.Error())
 		assert.Nil(t, res)
 	})
 
@@ -514,7 +514,7 @@ func testQuery(t *testing.T) {
 		}()
 
 		res, err := testClient.query("SELECT pg_sleep(1);")
-		assert.Equal(t, "pq: canceling statement due to user request", err.Error())
+		assert.Equal(t, "pq: canceling statement due to user request (57014)", err.Error())
 		assert.Nil(t, res)
 	})
 }
@@ -569,7 +569,7 @@ func testTableRowsOrderEscape(t *testing.T) {
 
 	rows, err = testClient.TableRows("dummies", RowsOptions{SortColumn: "isdummy"})
 	assert.NotNil(t, err)
-	assert.Equal(t, `pq: column "isdummy" does not exist`, err.Error())
+	assert.Equal(t, `pq: column "isdummy" does not exist at column 43 (42703)`, err.Error())
 	assert.Nil(t, rows)
 }
 
