@@ -123,20 +123,32 @@ body {
   left: 250px;
   right: 0;
   height: 50px;
+  display: flex;
   background: var(--bg-nav);
 }
 
+/* Tabs scroll sideways when they don't fit next to the buttons */
 #nav ul {
   margin: 0px;
   padding: 0px;
   height: 50px;
-  display: block;
+  display: flex;
+  flex: 1;
+  min-width: 0;
+  overflow-x: auto;
+  scrollbar-width: none;
+  /* Fade the edge so it's clear when there are more tabs */
+  mask-image: linear-gradient(to right, #000 calc(100% - 24px), transparent);
+}
+
+#nav ul::-webkit-scrollbar {
+  display: none;
 }
 
 #nav ul li {
   margin: 0px;
   padding: 0px;
-  float: left;
+  flex: none;
   height: 49px;
   line-height: 49px;
   font-size: 13px;
@@ -869,11 +881,11 @@ body {
 }
 
 .actions-container {
-  position: fixed;
-  right: 8px;
-  top: 10px;
+  flex: none;
   display: flex;
+  align-items: center;
   gap: 4px;
+  padding: 0 8px;
 }
 
 #edit_connection,
@@ -1190,4 +1202,188 @@ body:has(#theme-toggle:checked) .theme-toggle-label i.fa-moon-o::before,
 .dropdown-menu > li > a:focus {
   background-color: var(--bg-tertiary);
   color: var(--text-primary);
+}
+
+/* -------------------------------------------------------------------------- */
+/* Responsive */
+/* -------------------------------------------------------------------------- */
+
+#sidebar_toggle,
+#sidebar_backdrop {
+  display: none;
+}
+
+/* Toolbars don't fit on one row next to the sidebar, so they stack */
+@media (max-width: 1100px) {
+  /* Query actions: buttons, then row count and exports */
+  #input .input-wrapper {
+    height: 210px;
+  }
+
+  #custom_query {
+    height: 198px;
+  }
+
+  #input .actions {
+    height: 90px;
+  }
+
+  #input .actions .pull-right {
+    float: none !important;
+    clear: both;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding-top: 10px;
+  }
+
+  #input .actions .pull-right #result-rows-count {
+    margin-right: auto;
+  }
+
+  #input .actions .pull-right .btn {
+    margin-right: 0;
+  }
+
+  /* Rows: filters on two rows, pager below them */
+  #pagination {
+    height: 118px;
+    padding: 8px;
+  }
+
+  .with-pagination #pagination {
+    display: flex;
+    flex-wrap: wrap;
+    align-content: flex-start;
+    gap: 6px;
+  }
+
+  .with-pagination #output {
+    top: 118px !important;
+  }
+
+  #pagination .filters {
+    float: none;
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr 1fr auto auto;
+    gap: 6px;
+  }
+
+  #pagination .filters span {
+    display: none;
+  }
+
+  #pagination .filters select,
+  #pagination .filters select.column,
+  #pagination .filters select.filter,
+  #pagination .filters input,
+  #pagination .filters .btn-primary,
+  #pagination .filters .btn-default {
+    float: none;
+    width: auto;
+    min-width: 0;
+    margin: 0;
+  }
+
+  #pagination .filters select.filter {
+    grid-column: 2 / -1;
+  }
+
+  #pagination .filters input {
+    grid-column: 1 / 3;
+  }
+
+  #pagination .current-page {
+    order: 1;
+    float: none;
+    margin-right: auto;
+  }
+
+  #pagination .btn-group {
+    order: 2;
+    float: none;
+  }
+}
+
+/* Phones: the sidebar becomes a drawer */
+@media (max-width: 768px) {
+  #nav {
+    left: 0;
+  }
+
+  #sidebar_toggle {
+    display: block;
+    flex: none;
+    width: 44px;
+    line-height: 50px;
+    text-align: center;
+    font-size: 18px;
+    color: var(--text-light);
+    cursor: pointer;
+  }
+
+  #nav ul li {
+    padding: 0 10px;
+  }
+
+  /* Icon-only connection buttons */
+  #edit_connection,
+  #close_connection {
+    font-size: 0;
+  }
+
+  #edit_connection i {
+    font-size: 14px;
+    margin-right: 0;
+  }
+
+  #close_connection::before {
+    content: "\f08b"; /* fa-sign-out */
+    font-family: FontAwesome;
+    font-size: 14px;
+  }
+
+  #sidebar {
+    z-index: 1000;
+    transform: translateX(-100%);
+    transition: transform 0.2s ease;
+  }
+
+  .sidebar-open #sidebar {
+    transform: translateX(0);
+    box-shadow: 0 0 20px var(--shadow);
+  }
+
+  .sidebar-open #sidebar_backdrop {
+    display: block;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 999;
+    background: rgba(0, 0, 0, 0.4);
+  }
+
+  /* No hover on touch screens */
+  #sidebar .current-database span.refresh {
+    display: inline-block;
+  }
+
+  #body {
+    left: 0;
+  }
+
+  #content_modal {
+    width: auto;
+    left: 10px;
+    right: 10px;
+    top: 15%;
+  }
+
+  .connection-settings {
+    width: auto;
+    margin: 20px 15px;
+  }
 }

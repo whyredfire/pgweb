@@ -533,6 +533,10 @@ function setCurrentTab(id) {
   $("#nav ul li.selected").removeClass("selected");
   $("#" + id).addClass("selected");
 
+  // Tabs scroll sideways on small screens, keep the selected one in view
+  var tab = document.getElementById(id);
+  if (tab) tab.scrollIntoView({ block: "nearest", inline: "nearest" });
+
   // Persist tab selection into the session storage
   sessionStorage.setItem("tab", id);
 }
@@ -1498,7 +1502,7 @@ function checkInputSize() {
 function resizeInput(height) {
   if (height < 100) height = 100;
 
-  var diff = 50 + 12; // actions box + padding
+  var diff = ($("#input .actions").outerHeight() || 50) + 12; // actions box + padding
 
   $("#input").height(height);
   $("#input .input-wrapper").height(height - diff);
@@ -1624,11 +1628,22 @@ $(document).ready(function() {
     $(this).parent().toggleClass("expanded");
   });
 
+  $("#sidebar_toggle").on("click", function() {
+    $("body").toggleClass("sidebar-open");
+  });
+
+  $("#sidebar_backdrop").on("click", function() {
+    $("body").removeClass("sidebar-open");
+  });
+
   $("#objects").on("click", "li", function(e) {
     currentObject = {
       name: $(this).data("id"),
       type: $(this).data("type")
     };
+
+    // On small screens the sidebar is a drawer, close it once a table is picked
+    $("body").removeClass("sidebar-open");
 
     $("#objects li").removeClass("active");
     $(this).addClass("active");
