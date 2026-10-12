@@ -41,6 +41,13 @@
   --ace-editor-autocomplete-bg: var(--bg-primary);
   --ace-editor-autocomplete-active-line-bg: var(--bg-tertiary);
 
+  /* JSON viewer, matching the One Dark editor theme */
+  --json-key: #c678dd;
+  --json-string: #98c379;
+  --json-number: #d19a66;
+  --json-literal: #56b6c2;
+  --json-punctuation: #abb2bf;
+
   /* Scrollbar */
   --scrollbar-thumb-color: var(--color-light-700);
   scrollbar-color: var(--scrollbar-thumb-color) transparent;
@@ -87,6 +94,13 @@ body:has(#theme-toggle:checked) * {
   --ace-editor-gutter-color: var(--color-dark-100);
   --ace-editor-autocomplete-bg: var(--bg-primary);
   --ace-editor-autocomplete-active-line-bg: var(--bg-tertiary);
+
+  /* JSON viewer */
+  --json-key: #6d28d9;
+  --json-string: #116b39;
+  --json-number: #14559a;
+  --json-literal: #9a3412;
+  --json-punctuation: #475569;
 
   /* Scrollbar */
   --scrollbar-thumb-color: var(--color-dark-100);
@@ -814,7 +828,7 @@ body {
   padding: 8px;
   white-space: break-spaces;
   background: var(--bg-secondary);
-  color: #263243;
+  color: var(--text-primary);
   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
   font-size: 13px;
   line-height: 1.55;
@@ -824,11 +838,11 @@ body {
   color: var(--text-primary);
 }
 
-#content_modal .content .json-key { color: #6d28d9; }
-#content_modal .content .json-string { color: #116b39; }
-#content_modal .content .json-number { color: #14559a; }
-#content_modal .content .json-literal { color: #9a3412; }
-#content_modal .content .json-punctuation { color: #475569; }
+#content_modal .content .json-key { color: var(--json-key); }
+#content_modal .content .json-string { color: var(--json-string); }
+#content_modal .content .json-number { color: var(--json-number); }
+#content_modal .content .json-literal { color: var(--json-literal); }
+#content_modal .content .json-punctuation { color: var(--json-punctuation); }
 
 #content_modal .json-format {
   display: none;
@@ -839,8 +853,9 @@ body {
 #content_modal .json-format button {
   height: 24px;
   padding: 0 8px;
-  border: 1px solid #ddd;
-  background: #fff;
+  border: 1px solid var(--border-primary);
+  background: var(--bg-primary);
+  color: var(--text-secondary);
   font-size: 12px;
   cursor: pointer;
 }
@@ -850,9 +865,9 @@ body {
 }
 
 #content_modal .json-format button.active {
-  background: #3874d7;
-  border-color: #3874d7;
-  color: #fff;
+  background: var(--bg-blue);
+  border-color: var(--border-blue);
+  color: var(--text-light);
 }
 
 #content_modal .title {
