@@ -1970,7 +1970,7 @@ $(document).ready(function() {
         // Only apply system preference if user hasn't manually set a preference
         if (!localStorage.getItem("theme_preference")) {
           applyThemePreference();
-          updateEditorTheme(theme); // Update ACE editor theme when system theme changes
+          updateEditorTheme(); // Update ACE editor theme when system theme changes
         }
       });
     }
