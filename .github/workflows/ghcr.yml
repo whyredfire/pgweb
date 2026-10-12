@@ -1,0 +1,47 @@
+name: ghcr
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - Dockerfile
+      - Makefile
+      - go.mod
+      - go.sum
+      - main.go
+      - pkg/**
+      - static/**
+      - .github/workflows/ghcr.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    uses: docker/github-builder/.github/workflows/build.yml@v1
+    permissions:
+      contents: read
+      id-token: write
+      packages: write
+    with:
+      output: image
+      push: true
+      platforms: linux/amd64,linux/arm64
+      cache: true
+      build-args: |
+        CGO_ENABLED=0
+        BUILDKIT_CONTEXT_KEEP_GIT_DIR=1
+      sbom: true
+      set-meta-labels: true
+      set-meta-annotations: true
+      meta-images: ghcr.io/whyredfire/pgweb
+      meta-tags: |
+        type=sha
+        type=raw,value=latest
+    secrets:
+      registry-auths: |
+        - registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
