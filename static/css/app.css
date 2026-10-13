@@ -151,10 +151,14 @@ body {
   display: none;
 }
 
+:root {
+  --sidebar-width: var(--sidebar-user-width, 250px);
+}
+
 #nav {
   position: fixed;
   top: 0;
-  left: 250px;
+  left: var(--sidebar-width);
   right: 0;
   height: 50px;
   display: flex;
@@ -228,7 +232,7 @@ body {
 
 #sidebar {
   position: fixed;
-  width: 250px;
+  width: var(--sidebar-width);
   left: 0px;
   top: 0px;
   bottom: 0px;
@@ -240,7 +244,7 @@ body {
   position: fixed;
   left: 0px;
   top: 0px;
-  width: 250px;
+  width: var(--sidebar-width);
   height: 50px;
   line-height: 50px;
   font-weight: bold;
@@ -258,7 +262,7 @@ body {
 #sidebar .current-database span.current-database-name {
   margin-left: 30px;
   display: inline-block;
-  width: 200px;
+  width: calc(var(--sidebar-width) - 50px);
   height: 50px;
   white-space: nowrap;
   overflow: hidden;
@@ -275,7 +279,7 @@ body {
 #sidebar .current-database input.typeahead {
   margin-left: 30px;
   display: inline-block;
-  width: 200px;
+  width: calc(var(--sidebar-width) - 50px);
   height: 50px;
   white-space: nowrap;
   overflow: hidden;
@@ -285,7 +289,7 @@ body {
 #sidebar .current-database input.typeahead {
   display: none;
   background: var(--bg-brand);
-  width: 200px;
+  width: calc(var(--sidebar-width) - 50px);
   height: 22px;
   color: var(--text-light);
   font-weight: normal;
@@ -331,7 +335,7 @@ body {
   position: fixed;
   top: 50px;
   left: 0px;
-  width: 250px;
+  width: var(--sidebar-width);
   height: 30px;
   overflow: hidden;
 }
@@ -374,13 +378,13 @@ body {
   line-height: 22px;
   padding: 0px;
   margin-left: 25px;
-  width: 200px;
+  width: calc(var(--sidebar-width) - 50px);
   outline: none;
 }
 
 #sidebar div.tables-list {
   position: fixed;
-  width: 250px;
+  width: var(--sidebar-width);
   top: 80px;
   left: 0px;
   bottom: 130px;
@@ -400,7 +404,7 @@ body {
 
 #sidebar div.table-information {
   position: fixed;
-  width: 250px;
+  width: var(--sidebar-width);
   left: 0px;
   height: 130px;
   bottom: 0px;
@@ -443,7 +447,8 @@ body {
 #body {
   position: fixed;
   top: 50px;
-  left: 250px;
+  left: var(--sidebar-width);
+  container: body / inline-size;
   bottom: 0px;
   right: 0px;
   overflow: auto;
@@ -1304,6 +1309,31 @@ body:has(#theme-toggle:checked) .theme-toggle-label i.fa-moon-o::before,
 }
 
 /* -------------------------------------------------------------------------- */
+/* Sidebar resizing: drag the edge, double-click to reset */
+/* -------------------------------------------------------------------------- */
+
+#sidebar_resize_handler {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: calc(var(--sidebar-width) - 3px);
+  width: 6px;
+  cursor: col-resize;
+  touch-action: none;
+  z-index: 901;
+}
+
+#sidebar_resize_handler:hover,
+.sidebar-resizing #sidebar_resize_handler {
+  background: linear-gradient(to right, transparent 2px, var(--border-selected) 2px, var(--border-selected) 4px, transparent 4px);
+}
+
+.sidebar-resizing {
+  cursor: col-resize;
+  user-select: none;
+}
+
+/* -------------------------------------------------------------------------- */
 /* Responsive */
 /* -------------------------------------------------------------------------- */
 
@@ -1312,8 +1342,8 @@ body:has(#theme-toggle:checked) .theme-toggle-label i.fa-moon-o::before,
   display: none;
 }
 
-/* Toolbars don't fit on one row next to the sidebar, so they stack */
-@media (max-width: 1100px) {
+/* Toolbars stack when the content area is too narrow for one row */
+@container body (max-width: 850px) {
   /* Query actions: buttons, then row count and exports */
   #input .input-wrapper {
     height: 210px;
@@ -1407,6 +1437,14 @@ body:has(#theme-toggle:checked) .theme-toggle-label i.fa-moon-o::before,
 
 /* Phones: the sidebar becomes a drawer */
 @media (max-width: 768px) {
+  :root {
+    --sidebar-width: 250px;
+  }
+
+  #sidebar_resize_handler {
+    display: none;
+  }
+
   #nav {
     left: 0;
   }

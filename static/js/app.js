@@ -1579,6 +1579,50 @@ function enableDatabaseSearch(data) {
   });
 }
 
+function setSidebarWidth(width) {
+  // Keep enough room for the content next to the sidebar
+  var max = Math.max(250, Math.min(600, window.innerWidth - 500));
+  width = Math.round(Math.min(Math.max(width, 180), max));
+
+  document.documentElement.style.setProperty("--sidebar-user-width", width + "px");
+  if (editor) editor.resize();
+  return width;
+}
+
+function bindSidebarResizeEvents() {
+  var handle = document.getElementById("sidebar_resize_handler");
+  var savedWidth = function() { return parseInt(localStorage.getItem("sidebar_width")); };
+
+  if (savedWidth()) setSidebarWidth(savedWidth());
+
+  handle.addEventListener("pointerdown", function(e) {
+    e.preventDefault();
+    handle.setPointerCapture(e.pointerId);
+    $("body").addClass("sidebar-resizing");
+  });
+
+  handle.addEventListener("pointermove", function(e) {
+    if (handle.hasPointerCapture(e.pointerId)) setSidebarWidth(e.clientX);
+  });
+
+  handle.addEventListener("pointerup", function(e) {
+    $("body").removeClass("sidebar-resizing");
+    localStorage.setItem("sidebar_width", setSidebarWidth(e.clientX));
+  });
+
+  // Double-click goes back to the default width
+  handle.addEventListener("dblclick", function() {
+    localStorage.removeItem("sidebar_width");
+    document.documentElement.style.removeProperty("--sidebar-user-width");
+    if (editor) editor.resize();
+  });
+
+  // Re-apply the limits when the window shrinks
+  $(window).on("resize", function() {
+    if (savedWidth()) setSidebarWidth(savedWidth());
+  });
+}
+
 function bindInputResizeEvents() {
   var height = sessionStorage.getItem("input_height");
   if (height) {
@@ -1690,6 +1734,7 @@ function bindContentModalEvents() {
 $(document).ready(function() {
   initDropdownMenus();
   bindInputResizeEvents();
+  bindSidebarResizeEvents();
   bindContentModalEvents();
 
   $("#table_content").on("click",     function() { showTableContent();     });
